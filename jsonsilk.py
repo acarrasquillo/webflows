@@ -166,4 +166,91 @@ def loads(jsonRec):
 	return recDict
 
 
+###########################################################
+#	function: fRecTosRec(**kwargs)
+#	
+#	recieves: **kwargs NetFlow v5 dictionary with NetFlow v5 key fields and their values
+#	
+#	returns: A silkRWRec from the NetFlow v5 dictionary
+#
+###########################################################
+"""
+					NetFlow v5 format 												  | Silk Record
+
+Bytes 	Contents 	Description															Required	SiLKField
+
+0-3 	srcaddr 	Source IP address													Yes    		sip
+
+4-7 	dstaddr 	Destination IP address												Yes 		dip
+
+8-11 	nexthop 	IP address of next hop router										Yes 		nhip
+
+12-13	input 		SNMP index of input interface										Yes 		input
+
+14-15 	output 		SNMP index of output interface										Yes 		output
+
+16-19 	dPkts 		Packets in the flow 												Yes 		packets
+
+20-23 	dOctets 	Total number of Layer 3 bytes in the packets of the flow 			Yes 		bytes 		
+
+24-27 	First 		SysUptime at start of flow 											Yes  		stime		
+
+28-31 	Last 		SysUptime at the time the last packet of the flow was received 		Yes  		etime	
+
+32-33 	srcport 	TCP/UDP source port number or equivalent 							Yes 		sport
+
+34-35 	dstport 	TCP/UDP destination port number or equivalent 						Yes 		dport
+
+36 		pad1 		Unused (zero) bytes 												No 			-
+
+37 		tcp_flags 	Cumulative OR of TCP flags 											Yes 		tcpflags
+
+38 		prot 		IP protocol type (for example, TCP = 6; UDP = 17) 					Yes 		protocol
+
+39 		tos 		IP type of service (ToS) 											No 			N/A
+
+40-41 	src_as 		Autonomous system number of the source, either origin or peer 		No 			N/A
+
+42-43 	dst_as 		Autonomous system number of the destination, either origin or peer 	No 			N/A
+
+44 		src_mask 	Source address prefix mask bits 									No 			N/A
+
+45 		dst_mask 	Destination address prefix mask bits 								No 			N/A
+
+46-47 	pad2 		Unused (zero) bytes 												No 			-
+"""
+def fRecTosRec(srcaddr, dstaddr, index_input, index_output, dpkts, doctets, first, last, srcport, dstport,prot, **kwargs):
+
+	# dict to construct a silk.RWRec from the NetFlow v5 dict
+	rec = dict()
+		
+	rec['sip'] = srcaddr
+
+	rec['dip'] = dstaddr
+	
+	rec['input'] = index_input
+
+	rec['output'] = index_output
+
+	rec['packets'] = dpkts
+
+	rec['bytes'] = doctets
+
+	rec['stime'] = first
+
+	rec['etime'] = last
+
+	rec['sport'] = srcport
+
+	rec['dport'] = dstport
+
+	rec['protocol'] = prot
+
+	try:
+		rec = silk.RWRec(rec)
+	except Exception, e:
+		raise "Error constructing Netflow v5 to RWRec: \n\t %s \n" % rec, e
+
+	return rec
+
 
