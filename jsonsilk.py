@@ -246,6 +246,8 @@ def fRecTosRec(srcaddr, dstaddr, index_input, index_output, dpkts, doctets, firs
 
 	rec['protocol'] = prot
 
+	rec = serializableRecord(rec)
+
 	try:
 		rec = silk.RWRec(rec)
 	except Exception, e:
