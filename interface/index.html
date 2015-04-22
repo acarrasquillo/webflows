@@ -1,11 +1,165 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title>Title of the document</title>
-</head>
+  <head>
+    <title>AngularJS Binding</title>
+<!-- 
 
-<body>
-The content of the document......
-</body>
+srcaddr 	Source IP address
 
+dstaddr 	Destination IP address
+
+nexthop 	IP address of next hop router
+
+input 		SNMP index of input interface
+
+output 		SNMP index of output interface
+
+dPkts 		Packets in the flow 		
+
+dOctets 	Total number of Layer 3 bytes in the packets of the flow
+
+First 		SysUptime at start of flow 											
+
+Last 		SysUptime at the time the last packet of the flow was received 
+
+srcport 	TCP/UDP source port number or equivalent 						
+
+dstport 	TCP/UDP destination port number or equivalent 					
+
+pad1 		Unused (zero) bytes 											
+
+tcp_flags 	Cumulative OR of TCP flags 											Yes 		tcpflags
+
+prot 		IP protocol type (for example, TCP = 6; UDP = 17) 					Yes 		protocol
+-->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0-beta.5/angular.min.js"></script>
+
+    <script src='queryform.js'></script>
+  </head>
+  <body>
+  	<h3>Silk Record Fields for filter </h3>
+  	<table>
+  		<tr>
+  			<td> srcaddr </td> 
+  			<td> Source IP address </td>
+  		</tr>
+  		<tr>
+  			<td> dstaddr </td>
+  			<td> Destination IP address </td>
+  		</tr>
+  		<tr>
+  			<td> nexthop  </td>
+  			<td> IP address of next hop router </td>
+  		</tr>
+  		<tr>
+  			<td> input </td>
+  			<td> SNMP index of input interface </td>
+  		</tr>
+  		<tr>
+  			<td> output </td>
+  			<td> SNMP index of output interface </td>
+  		</tr>
+  		<tr>
+  			<td> dPkts </td>
+  			<td> Packets in the flow </td>
+  		</tr>
+  		<tr>
+  			<td> dOctets </td>
+  			<td> Total number of Layer 3 bytes in the packets of the flow </td>
+  		</tr>
+  		<tr>
+  			<td> first </td>
+  			<td> SysUptime at start of flow </td>
+  		</tr>
+  		<tr>
+  			<td> last </td>
+  			<td> SysUptime at the time the last packet of the flow was received </td>
+  		</tr>
+  		<tr>
+  			<td> srcport </td>
+  			<td> TCP/UDP source port number or equivalent </td>
+  		</tr>
+  		<tr>
+  			<td> dstport </td>
+  			<td> TCP/UDP destination port number or equivalent </td>
+  		</tr><tr>
+  			<td> tcp_flags </td>
+  			<td> Cumulative OR of TCP flags </td>
+  		</tr>
+  		<tr>
+  			<td> prot </td>
+  			<td> IP protocol type (for example, TCP = 6; UDP = 17) </td>
+  		</tr>
+  	</table>
+
+    <div ng-app="QueryForm" ng-controller="FormCtrl">
+      <h1>Build your query</h1>
+      <div ng-show="showField['srcaddr'] || showField['dstaddr']">
+        <h3> IP adresses </h3>
+        <!-- <select ng-repeat="(modelIndex,itemValue) in ipOptions track by modelIndex" ng-model="result[modelIndex]" ng-options="item for item in $parent.ipOptions | arrayDiff:result:result[modelIndex]">
+          <option value="">Select IP</option>
+        </select> -->
+        <div ng-show="showField['srcaddr']">
+          srcaddr:<input type="text" ng-model= "ipValues['srcaddr']" ng-pattern="ipv4pattern">
+        </div>
+        <div ng-show="showField['srcaddr'] && showField['dstaddr']">  
+          logic: <select  ng-options="item for item in logicOptions" ng-model="ipValues['logic']"></select>
+        </div>
+        <div ng-show="showField['dstaddr']">
+          dstaddr<input type="text" ng-model= "ipValues['dstaddr']" ng-pattern="ipv4pattern">
+        </div>
+        <br>
+        IP adresses result: {{ ipValues }}
+        <br>
+      </div>
+      <div ng-show="showField['srcport'] || showField['dstport']">
+        <h3> Ports </h3>
+        <!-- <select ng-repeat="(modelIndex,itemValue) in ipOptions track by modelIndex" ng-model="result[modelIndex]" ng-options="item for item in $parent.ipOptions | arrayDiff:result:result[modelIndex]">
+          <option value="">Select IP</option>
+        </select> -->
+        <div ng-show="showField['srcport']">
+          srcport:<input type="number" ng-model= "portValues['srcport']" min="1">
+        </div>
+        <div ng-show="showField['srcport'] && showField['dstport']">
+          logic: <select ng-options="item for item in logicOptions" ng-model="portValues['logic']"></select>
+        </div>
+        <div ng-show="showField['dstport']">  
+          dstport: <input type="number" ng-model= "portValues['dstport']" min="1">
+        </div>
+        <br>
+        Ports result: {{ portValues }}
+      </div>
+      <div ng-show="showField['nexthop'] || showField['output'] || showField['input'] || showField['dPkts'] || showField['dOctets'] || showField['first'] || showField['last'] || showField['tcp_flags'] || showField['prot']">
+        <h3>Other Fields</h3>
+        <div ng-show="showField['nexthop']">
+          nexthop:<input type="text" ng-model="otherValues['nexthop']" ng-pattern="ipv4pattern">
+        </div>
+        <div ng-show="showField['output']">
+          output:<input type="number" ng-model="otherValues['output']" min="1">
+        </div>
+        <div ng-show="showField['input']">
+          input: <input type="number" ng-model="otherValues['input']" min="1">
+        </div>
+        <div ng-show="showField['dPkts']">
+          dPkts: <input type="number" ng-model= "otherValues['dPkts']" min="1">
+        </div>
+        <div ng-show="showField['dOctets']">
+          dOctets: <input type="number" ng-model="otherValues['dOctets']">
+        </div>
+        <div ng-show="showField['first']">
+          first: <input type="number" ng-model="otherValues['first']" min="1">
+        </div>
+        <div ng-show="showField['last']">
+          last: <input type="number" ng-model="otherValues['last']" min="1">
+        </div>
+        <div ng-show="showField['tcp_flags']">
+          tcp_flags: <input type="text" ng-model="otherValues['tcp_flags']">
+        </div>
+        <div ng-show="showField['prot']">
+          tcp_flags: <input type="text" ng-model="otherValues['prot']">
+        </div>
+        Other Values: {{ otherValues }}
+      </div>
+    </div>
+  </body>
 </html>
