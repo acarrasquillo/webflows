@@ -32,13 +32,24 @@ tcp_flags 	Cumulative OR of TCP flags 											Yes 		tcpflags
 
 prot 		IP protocol type (for example, TCP = 6; UDP = 17) 					Yes 		protocol
 -->
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0-beta.5/angular.min.js"></script>
 
-    <script src='queryform.js'></script>
+    <!-- Include JQUERY: -->
+    <script type="text/javascript" src="assets/js/angular.min.js"></script>
+    <!-- Include Angular app: -->
+    <script src='app/queryform.js'></script>
+    <!-- Include Bootstrap's CSS and JS: -->
+    <link rel="stylesheet" type="text/css" href="assets/bootstrap/css/bootstrap.min.css">
+    <script src="assets/js/jquery.min.js"></script>
+    <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Include the bootstrap-multiselect plugin's CSS and JS: -->
+    <script type="text/javascript" src="assets/js/dropdowns-enhancement.js"></script>
+    <link rel="stylesheet" href="assets/css/dropdowns-enhancement.css" type="text/css"/>
+
   </head>
   <body>
   	<h3>Silk Record Fields for filter </h3>
-  	<table>
+  	<table style="width:100%;">
   		<tr>
   			<td> srcaddr </td> 
   			<td> Source IP address </td>
@@ -90,10 +101,69 @@ prot 		IP protocol type (for example, TCP = 6; UDP = 17) 					Yes 		protocol
   			<td> prot </td>
   			<td> IP protocol type (for example, TCP = 6; UDP = 17) </td>
   		</tr>
-  	</table>
-
+  	</table> <!-- legend table -->
     <div ng-app="QueryForm" ng-controller="FormCtrl">
       <h1>Build your query</h1>
+        <div class="dropdown">
+          <div class="btn-group">
+            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle"> Select Fields <span class="caret"></span></button>
+            <button class="btn btn-info" ng-click="postQueryData()">BuildQuery</button>
+              <ul class="dropdown-menu">
+                <li>
+                    <input type="checkbox" id="chk-srcaddr" ng-model="showField['srcaddr']">
+                    <label for="chk-srcaddr">srcaddr</label></li>
+                <li>
+                    <input type="checkbox" id="chk-dstaddr" ng-model="showField['dstaddr']">
+                    <label for="chk-dstaddr">dstaddr</label>
+                </li>
+                <li>
+                  <input type="checkbox" id="chk-srcport" ng-model="showField['srcport']">
+                  <label for="chk-srcport">srcport</label>
+                </li>
+                <li>
+                  <input type="checkbox" id="chk-dstport" ng-model="showField['dstport']">
+                  <label for="chk-dstport">dstport</label>
+                </li>
+                <li>
+                  <input type="checkbox" id="chk-nexthop" ng-model="showField['nexthop']">
+                  <label for="chk-nexthop">nexthop</label>
+                </li>
+                <li>
+                  <input type="checkbox" id="chk-input" ng-model="showField['input']">
+                  <label for="chk-input">input</label>
+                </li>
+                <li>
+                  <input type="checkbox" id="chk-output" ng-model="showField['output']">
+                  <label for="chk-output">output</label>
+                </li>
+                <li>
+                  <input type="checkbox" id="chk-dPkts" ng-model="showField['dPkts']">
+                  <label for="chk-dPkts">dPkts</label>
+                </li>
+                <li>
+                  <input type="checkbox" id="chk-dOctets" ng-model="showField['dOctets']">
+                  <label for="chk-dOctets">dOctets</label>
+                </li>
+                <li>
+                  <input type="checkbox" id="chk-first" ng-model="showField['first']">
+                  <label for="chk-first">first</label>
+                </li>
+                <li>
+                  <input type="checkbox" id="chk-last" ng-model="showField['last']">
+                  <label for="chk-last">last</label>
+                </li>
+                <li>
+                  <input type="checkbox" id="chk-tcp_flags" ng-model="showField['tcp_flags']">
+                  <label for="chk-tcp_flags">tcp_flags</label>
+                </li>
+                <li>
+                  <input type="checkbox" id="chk-prot" ng-model="showField['prot']">
+                  <label for="chk-prot">prot</label>
+                </li>
+              </ul>
+          </div> <!-- btn-group -->
+        </div> <!-- dropdown -->
+
       <div ng-show="showField['srcaddr'] || showField['dstaddr']">
         <h3> IP adresses </h3>
         <!-- <select ng-repeat="(modelIndex,itemValue) in ipOptions track by modelIndex" ng-model="result[modelIndex]" ng-options="item for item in $parent.ipOptions | arrayDiff:result:result[modelIndex]">
@@ -109,14 +179,11 @@ prot 		IP protocol type (for example, TCP = 6; UDP = 17) 					Yes 		protocol
           dstaddr<input type="text" ng-model= "ipValues['dstaddr']" ng-pattern="ipv4pattern">
         </div>
         <br>
-        IP adresses result: {{ ipValues }}
+        {{ ipValues }}
         <br>
       </div>
       <div ng-show="showField['srcport'] || showField['dstport']">
         <h3> Ports </h3>
-        <!-- <select ng-repeat="(modelIndex,itemValue) in ipOptions track by modelIndex" ng-model="result[modelIndex]" ng-options="item for item in $parent.ipOptions | arrayDiff:result:result[modelIndex]">
-          <option value="">Select IP</option>
-        </select> -->
         <div ng-show="showField['srcport']">
           srcport:<input type="number" ng-model= "portValues['srcport']" min="1">
         </div>
@@ -127,39 +194,59 @@ prot 		IP protocol type (for example, TCP = 6; UDP = 17) 					Yes 		protocol
           dstport: <input type="number" ng-model= "portValues['dstport']" min="1">
         </div>
         <br>
-        Ports result: {{ portValues }}
+        {{ portValues }}
       </div>
-      <div ng-show="showField['nexthop'] || showField['output'] || showField['input'] || showField['dPkts'] || showField['dOctets'] || showField['first'] || showField['last'] || showField['tcp_flags'] || showField['prot']">
+      <div id="InputFields" ng-show="showField['nexthop'] || showField['output'] || showField['input'] || showField['dPkts'] || showField['dOctets'] || showField['first'] || showField['last'] || showField['tcp_flags'] || showField['prot']">
         <h3>Other Fields</h3>
         <div ng-show="showField['nexthop']">
-          nexthop:<input type="text" ng-model="otherValues['nexthop']" ng-pattern="ipv4pattern">
-        </div>
-        <div ng-show="showField['output']">
-          output:<input type="number" ng-model="otherValues['output']" min="1">
+          nexthop:<input type="text" ng-model="nexthopValue['value']" ng-pattern="ipv4pattern">
+          {{ nexthopValue }}
         </div>
         <div ng-show="showField['input']">
-          input: <input type="number" ng-model="otherValues['input']" min="1">
+          input:
+          <select ng-options="item for item in relationOptions" ng-model="inputValue['relational_op']"></select>
+          <input type="number" ng-model="inputValue['value']" min="1">
+          {{ inputValue }}
+        </div>
+        <div ng-show="showField['output']">
+          output:
+          <select ng-options="item for item in relationOptions" ng-model="outputValue['relational_op']"></select>
+          <input type="number" ng-model="outputValue['value']" min="1">
+          {{ outputValue }}
         </div>
         <div ng-show="showField['dPkts']">
-          dPkts: <input type="number" ng-model= "otherValues['dPkts']" min="1">
+          dPkts: 
+          <select ng-options="item for item in relationOptions" ng-model="dPktsValue['relational_op']"></select>
+          <input type="number" ng-model= "dPktsValue['value']" min="1">
+          {{ dPktsValue }}
         </div>
         <div ng-show="showField['dOctets']">
-          dOctets: <input type="number" ng-model="otherValues['dOctets']">
+          dOctets: 
+          <select ng-options="item for item in relationOptions" ng-model="dOctetsValue['relational_op']"></select>
+          <input type="number" ng-model="dOctetsValue['value']">
+          {{ dOctetsValue }}
         </div>
         <div ng-show="showField['first']">
-          first: <input type="number" ng-model="otherValues['first']" min="1">
+          first: 
+          <select ng-options="item for item in relationOptions" ng-model="firstValue['relational_op']"></select>
+          <input type="number" ng-model="firstValue['value']" min="1">
+          {{ firstValue }}
         </div>
         <div ng-show="showField['last']">
-          last: <input type="number" ng-model="otherValues['last']" min="1">
+          last: 
+          <select ng-options="item for item in relationOptions" ng-model="lastValue['relational_op']"></select>
+          <input type="number" ng-model="lastValue['value']" min="1">
+          {{ lastValue }}
         </div>
         <div ng-show="showField['tcp_flags']">
-          tcp_flags: <input type="text" ng-model="otherValues['tcp_flags']">
+          tcp_flags: <input type="text" ng-model="tcpFlagsValue['value']">
+          {{ tcpFlagsValue }}
         </div>
         <div ng-show="showField['prot']">
-          tcp_flags: <input type="text" ng-model="otherValues['prot']">
+          prot: <input type="text" ng-model="protValue['value']">
+          {{ protValue }}
         </div>
-        Other Values: {{ otherValues }}
-      </div>
-    </div>
+      </div> <!-- InputFields -->
+    </div> <!-- QueryForm -->
   </body>
 </html>

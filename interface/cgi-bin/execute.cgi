@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-print "Content-Type: text/html"
+import cgi,os,sys,json
+import cgitb; cgitb.enable()  # for troubleshooting
+
+print "Content-type: text/html"
 print
-print """\
-<html>
-<body>
-<h2>Hello World!</h2>
-</body>
-</html>
-"""
+length = os.environ["CONTENT_LENGTH"] 
+data =  sys.stdin.read(int(length))
+print data
