@@ -254,5 +254,3 @@ def fRecTosRec(srcaddr, dstaddr, index_input, index_output, dpkts, doctets, firs
 		raise "Error constructing Netflow v5 to RWRec: \n\t %s \n" % rec, e
 
 	return rec
-
-
