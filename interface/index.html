@@ -247,6 +247,17 @@ prot 		IP protocol type (for example, TCP = 6; UDP = 17) 					Yes 		protocol
           {{ protValue }}
         </div>
       </div> <!-- InputFields -->
+
+      <div ng-show="showResult['jsondata']" class="panel panel-info">
+      <div class="panel-heading">
+        <div class="panel-title">
+          Query Result
+        </div>
+      </div>
+      <div class="panel-body">
+         {{ jsonResult }}
+      </div>
+    </div> <!-- json result -->
     </div> <!-- QueryForm -->
   </body>
 </html>

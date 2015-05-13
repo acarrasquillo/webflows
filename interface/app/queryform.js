@@ -61,21 +61,21 @@ app.controller('FormCtrl', function($scope,$http){
 	};
 	// record to display forms for the fields
 	$scope.showField = {
-		'srcaddr': true,
+		'srcaddr': false,
 		'dstaddr': true,
-		'ipLogic': true,
-		'srcport': true,
-		'dstport': true,
+		'ipLogic': false,
+		'srcport': false,
+		'dstport': false,
 		'portLogic': true,
-		'nexthop': true,
-		'output': true,
-		'input': true,
-		'dPkts': true,
-		'dOctets': true,
-		'first': true,
-		'last': true,
-		'tcp_flags': true,
-		'prot': true
+		'nexthop': false,
+		'output': false,
+		'input': false,
+		'dPkts': false,
+		'dOctets': false,
+		'first': false,
+		'last': false,
+		'tcp_flags': false,
+		'prot': false
 	};
 	// $scope.showField = {
 	// 	srcaddr: false,
@@ -94,7 +94,12 @@ app.controller('FormCtrl', function($scope,$http){
 	// 	tcp_flags: false,
 	// 	prot: false
 	// };
-
+	
+	// JSON Result
+	$scope.showResult = {
+		"jsondata": false
+	};
+	$scope.jsonResult = null;
 
 	// build json function
 	$scope.FieldstoJSON = function() {
@@ -105,11 +110,19 @@ app.controller('FormCtrl', function($scope,$http){
 				// add the fields to the json object
 				switch (key){
 
-					case "srcaddr" || "dstaddr":{
+					case "srcaddr":{
 						$scope.jsonData['ipValue'] = $scope.ipValues;
 						break; 
 					};
-					case "srcport" || "dstport":{
+					case "dstaddr":{
+						$scope.jsonData['ipValue'] = $scope.ipValues;
+						break; 
+					};
+					case "srcport":{
+						$scope.jsonData['portValue'] = $scope.portValues;
+						break;
+					};
+					case "dstport":{
 						$scope.jsonData['portValue'] = $scope.portValues;
 						break;
 					};
@@ -159,7 +172,6 @@ app.controller('FormCtrl', function($scope,$http){
 		};
 		return JSON.stringify($scope.jsonData);
 	};
-
 	// ajaxcall
 	$scope.postQueryData = function(){
 		var jsondata = $scope.FieldstoJSON();
@@ -173,6 +185,8 @@ app.controller('FormCtrl', function($scope,$http){
       	}).success(function (data, status, headers, config) {
             console.log(status + ' ' + headers);
             console.log(data);
+            $scope.showResult['jsondata'] = true;
+            $scope.jsonResult = data;
             //$scope.response_status= status + ' ' + headers;
             //$scope.response=data; // assign  $scope.persons here as promise is resolved here 
         }).error(function (data, status, headers, config) {
