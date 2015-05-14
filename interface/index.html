@@ -48,6 +48,7 @@ prot 		IP protocol type (for example, TCP = 6; UDP = 17) 					Yes 		protocol
 
   </head>
   <body>
+    <div class="container">
   	<h3>Silk Record Fields for filter </h3>
   	<table style="width:100%;">
   		<tr>
@@ -255,9 +256,10 @@ prot 		IP protocol type (for example, TCP = 6; UDP = 17) 					Yes 		protocol
         </div>
       </div>
       <div class="panel-body">
-         {{ jsonResult }}
+         <pre> {{ jsonResult | json }} </pre>
       </div>
     </div> <!-- json result -->
     </div> <!-- QueryForm -->
+  </div> <!--  container -->
   </body>
 </html>

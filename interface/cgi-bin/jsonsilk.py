@@ -264,7 +264,7 @@ def checkIPs(silkRec,ipValue):
 
 			return False,info
 
-		elif ipValue['dstaddr'] != str(silkRec.dip):
+		elif ipValue['dstaddr'] != None and ipValue['dstaddr'] != str(silkRec.dip):
 
 			info = ("Error: dstaddr",{"query":ipValue['dstaddr'],"rec":str(silkRec.dip)})
 
@@ -303,7 +303,7 @@ def checkPorts(silkRec,portValue):
 
 			return False, info
 
-		elif portValue['dstport'] != silkRec.dport:
+		elif portValue['dstport'] != None and portValue['dstport']  != silkRec.dport:
 
 			info = ("Error: dstport",{"query":portValue['dstport'],"rec":silkRec.dport})
 
@@ -326,10 +326,11 @@ def checkPorts(silkRec,portValue):
 
 			return False, info
 
-	else: 
-		return False
+	else:
+		info = "Error: portValue, din't match any logic" 
+		return False, info
 
-	return True
+	return True,None
 
 # Function to verfy if a record match the query parameters
 def checkRec(silkRec, queryDic):
